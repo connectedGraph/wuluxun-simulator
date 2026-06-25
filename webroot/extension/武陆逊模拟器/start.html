@@ -1,0 +1,679 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>武陆逊模拟器</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #101410;
+      color: #f3f0e8;
+      --launcher-bg-image: none;
+      --launcher-bg-blur: 10px;
+      --launcher-bg-opacity: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(117, 31, 31, 0.28), transparent 28rem),
+        radial-gradient(circle at 83% 22%, rgba(27, 93, 91, 0.24), transparent 24rem),
+        linear-gradient(135deg, #101410 0%, #171612 48%, #251b14 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -36px;
+      z-index: 0;
+      background-image: var(--launcher-bg-image);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      filter: blur(var(--launcher-bg-blur));
+      opacity: var(--launcher-bg-opacity);
+      transform: scale(1.04);
+      transition: opacity 240ms ease, filter 160ms ease;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(16, 20, 16, 0.1), transparent 19rem),
+        linear-gradient(180deg, rgba(13, 16, 14, 0.28), rgba(13, 16, 14, 0.72)),
+        linear-gradient(135deg, rgba(43, 16, 14, 0.34), rgba(10, 24, 21, 0.45));
+      pointer-events: none;
+    }
+
+    main {
+      width: min(520px, calc(100vw - 32px));
+      display: grid;
+      gap: 18px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      padding: 32px 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 8vw, 58px);
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .loadout {
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+    }
+
+    .portrait {
+      width: min(230px, 58vw);
+      min-width: 0;
+      aspect-ratio: 3 / 4;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: #1a1d19 center / cover no-repeat;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+    }
+
+    .skin-toggle {
+      width: min(360px, 100%);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .skin-option {
+      min-width: 0;
+      height: 38px;
+      border-color: rgba(232, 212, 151, 0.35);
+      background: rgba(255, 255, 255, 0.08);
+      color: #f3f0e8;
+      font-size: 15px;
+    }
+
+    .skin-option[aria-checked="true"] {
+      border-color: rgba(232, 212, 151, 0.9);
+      background: #d7c287;
+      color: #17130d;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      min-width: 132px;
+      height: 44px;
+      border: 1px solid rgba(232, 212, 151, 0.55);
+      border-radius: 6px;
+      background: #d7c287;
+      color: #17130d;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: transparent;
+      color: #f3f0e8;
+    }
+
+    .background-panel {
+      width: min(360px, 100%);
+      justify-self: center;
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 6px;
+      background: rgba(12, 14, 12, 0.42);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.24);
+    }
+
+    .background-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .background-panel button {
+      min-width: 0;
+      height: 36px;
+      font-size: 14px;
+    }
+
+    .blur-control {
+      display: grid;
+      grid-template-columns: auto 1fr 34px;
+      align-items: center;
+      gap: 10px;
+      color: #eee6d2;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .blur-control input {
+      width: 100%;
+      accent-color: #d7c287;
+    }
+
+    .blur-control output {
+      text-align: right;
+      color: #d7c287;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #status {
+      min-height: 24px;
+      color: #cfc7b7;
+      font-size: 14px;
+    }
+
+    @media (max-width: 560px) {
+      main {
+        width: min(420px, calc(100vw - 24px));
+      }
+
+      .loadout {
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>武陆逊模拟器</h1>
+    <section class="loadout" aria-label="武陆逊形象">
+      <div id="portrait" class="portrait" aria-label="武陆逊"></div>
+      <div class="skin-toggle" role="radiogroup" aria-label="形象选择">
+        <button class="skin-option" data-skin="classic" type="button" role="radio" aria-checked="false">经典形象</button>
+        <button class="skin-option" data-skin="shenxiu_zhengrong" type="button" role="radio" aria-checked="false">神秀峥嵘</button>
+      </div>
+    </section>
+    <div class="actions">
+      <button id="start" type="button">启动</button>
+    </div>
+    <section class="background-panel" aria-label="背景">
+      <div class="background-actions">
+        <button id="bg-random" class="secondary" type="button">随机背景</button>
+        <button id="bg-upload" class="secondary" type="button">上传背景</button>
+      </div>
+      <label class="blur-control" for="bg-blur">
+        <span>背景模糊</span>
+        <input id="bg-blur" type="range" min="0" max="28" step="1" value="10">
+        <output id="bg-blur-value" for="bg-blur">10</output>
+      </label>
+      <input id="bg-file" type="file" accept="image/*,.avif" hidden>
+    </section>
+    <div id="status" role="status" aria-live="polite"></div>
+  </main>
+  <script>
+    const DECADE_NAME = "\u5341\u5468\u5e74UI";
+    const SIM_NAME = "\u6b66\u9646\u900a\u6a21\u62df\u5668";
+    const GAME_VERSION = "1.11.4.1";
+    const DECADE_VERSION = "1.3.1";
+    const SIM_VERSION = "0.4.3";
+    const BRAWL_KEY = "wuluxun_simulator";
+    const CARD_SKIN = "decade";
+    const BACKGROUND_API = "https://api.rls.ovh/horizontal";
+    const BACKGROUND_DB_NAME = "wuluxun_launcher_assets";
+    const BACKGROUND_DB_STORE = "assets";
+    const BACKGROUND_BLOB_KEY = "background_blob";
+    const BACKGROUND_MODE_KEY = "wuluxun_launcher_bg_mode";
+    const BACKGROUND_BLUR_KEY = "wuluxun_launcher_bg_blur";
+    const SKIN_CONFIG_KEY = "extension_" + SIM_NAME + "_wuluxunSkin";
+    const SKIN_STORAGE_KEY = "wuluxun_simulator_skin";
+    const ROOT_PREFIX = location.pathname.includes("/extension/") ? "../../" : "";
+    const skinOptions = {
+      classic: {
+        image: ROOT_PREFIX + "image/character/wu_luxun.jpg",
+        position: "center",
+        size: "cover",
+      },
+      shenxiu_zhengrong: {
+        image: ROOT_PREFIX + "extension/" + SIM_NAME + "/assets/skins/shenxiu_zhengrong/character/wu_luxun.png",
+        position: "58% 36%",
+        size: "auto 118%",
+      },
+    };
+    const CONFIG_PREFIXES = ["noname_0.9_", "noname_0.9_D_"];
+    const statusNode = document.getElementById("status");
+    const portraitNode = document.getElementById("portrait");
+    const skinButtons = Array.from(document.querySelectorAll(".skin-option"));
+    const bgRandomButton = document.getElementById("bg-random");
+    const bgUploadButton = document.getElementById("bg-upload");
+    const bgFileInput = document.getElementById("bg-file");
+    const bgBlurInput = document.getElementById("bg-blur");
+    const bgBlurValue = document.getElementById("bg-blur-value");
+    let selectedSkin = localStorage.getItem(SKIN_STORAGE_KEY);
+    let backgroundObjectUrl = "";
+    let backgroundReadyPromise = Promise.resolve(false);
+    let backgroundRequestToken = 0;
+    if (!skinOptions[selectedSkin]) selectedSkin = "shenxiu_zhengrong";
+
+    const scene = {
+      name: SIM_NAME,
+      intro: "\u56fa\u5b9a\u4e24\u4eba\u5c40\uff1a\u4f60\u63a7\u5236\u6b66\u9646\u900a\uff0c\u5bf9\u65b9\u5140\u7a81\u9aa8\u7531\u539f\u7248AI\u6258\u7ba1\u3002",
+      gameDraw: true,
+      replacepile: false,
+      cardPileTop: [],
+      cardPileBottom: [],
+      discardPile: [],
+      players: [
+        { name: "wu_luxun", name2: "none", identity: "zhu", position: 1, playercontrol: true, handcards: [], equips: [], judges: [] },
+        { name: "wutugu", name2: "none", identity: "fan", position: 2, playercontrol: false, handcards: [], equips: [], judges: [] },
+      ],
+    };
+
+    const stage = {
+      name: SIM_NAME,
+      intro: "\u6b66\u9646\u900a vs \u5140\u7a81\u9aa8\u3002",
+      mode: "normal",
+      scenes: [scene],
+    };
+
+    const config = {
+      mode: "brawl",
+      version: GAME_VERSION,
+      asset_version: "\u65e0",
+      show_splash: "off",
+      extensions: [DECADE_NAME, SIM_NAME],
+      extension_auto_import: false,
+      new_tutorial: true,
+      layout: "nova",
+      extension_qianhuan_enable: false,
+      ["extension_" + DECADE_NAME + "_enable"]: true,
+      ["extension_" + SIM_NAME + "_enable"]: true,
+      ["extension_" + DECADE_NAME + "_version"]: DECADE_VERSION,
+      ["extension_" + DECADE_NAME + "_welcomeVersion"]: DECADE_VERSION,
+      ["extension_" + SIM_NAME + "_version"]: SIM_VERSION,
+      characters: ["sp", "xianding"],
+      cards: ["standard", "extra"],
+      video: "0",
+      video_default_play_speed: "1x",
+      background_audio: true,
+      background_music: "music_off",
+      background_speak: true,
+      volumn_audio: 6,
+      volumn_background: 4,
+      show_volumn: true,
+      show_pause: false,
+      show_auto: false,
+      show_wuxie: false,
+      show_sortcard: false,
+      show_deckMonitor: false,
+      show_round_menu: false,
+      change_card_mode_config_identity: "unlimited",
+      double_character_mode_config_identity: false,
+      free_choose_mode_config_identity: false,
+      player_number_mode_config_identity: 2,
+      ["extension_" + DECADE_NAME + "_newDecadeStyle"]: "on",
+      ["extension_" + DECADE_NAME + "_cardPrettify"]: CARD_SKIN,
+      ["extension_" + DECADE_NAME + "_cardGhostEffect"]: true,
+      ["extension_" + DECADE_NAME + "_cardPrompt"]: true,
+      ["extension_" + DECADE_NAME + "_cardAlternateName"]: false,
+      ["extension_" + DECADE_NAME + "_chupaizhishi"]: "shousha",
+      ["extension_" + DECADE_NAME + "_bettersound"]: true,
+      ["extension_" + DECADE_NAME + "_skillDieAudio"]: true,
+      ["extension_" + DECADE_NAME + "_audioEasterEggs"]: true,
+      ["extension_" + DECADE_NAME + "_wujiangbeijing"]: false,
+      ["extension_" + DECADE_NAME + "_dynamicSkin"]: false,
+      ["extension_" + DECADE_NAME + "_dynamicSkinOutcrop"]: false,
+      ["extension_" + DECADE_NAME + "_killEffect"]: false,
+      ["extension_" + DECADE_NAME + "_GTBBYangshi"]: "0",
+      [SKIN_CONFIG_KEY]: selectedSkin,
+    };
+
+    const brawlData = {
+      scene: { [SIM_NAME]: scene },
+      stage: { [SIM_NAME]: stage },
+      currentBrawl: "stage_" + SIM_NAME,
+      directStage: [SIM_NAME, 0],
+    };
+
+    function setStatus(text) {
+      statusNode.textContent = text;
+    }
+
+    function setSkin(skin) {
+      if (!skinOptions[skin]) return;
+      selectedSkin = skin;
+      localStorage.setItem(SKIN_STORAGE_KEY, selectedSkin);
+      config[SKIN_CONFIG_KEY] = selectedSkin;
+      const option = skinOptions[selectedSkin];
+      portraitNode.style.backgroundImage = 'url("' + option.image + '")';
+      portraitNode.style.backgroundPosition = option.position;
+      portraitNode.style.backgroundSize = option.size;
+      skinButtons.forEach(button => {
+        button.setAttribute("aria-checked", button.dataset.skin === selectedSkin ? "true" : "false");
+      });
+    }
+
+    function requestToPromise(request) {
+      return new Promise((resolve, reject) => {
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+      });
+    }
+
+    function setBackgroundBlur(value) {
+      const blur = Math.max(0, Math.min(28, Number(value) || 0));
+      document.documentElement.style.setProperty("--launcher-bg-blur", blur + "px");
+      bgBlurInput.value = String(blur);
+      bgBlurValue.value = String(blur);
+      localStorage.setItem(BACKGROUND_BLUR_KEY, String(blur));
+    }
+
+    function setBackgroundImage(url, objectUrl = false) {
+      if (backgroundObjectUrl && backgroundObjectUrl !== url) {
+        URL.revokeObjectURL(backgroundObjectUrl);
+      }
+      backgroundObjectUrl = objectUrl ? url : "";
+      document.documentElement.style.setProperty("--launcher-bg-image", "url(" + JSON.stringify(url) + ")");
+      document.documentElement.style.setProperty("--launcher-bg-opacity", "1");
+    }
+
+    function loadImage(url) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.decoding = "async";
+        image.referrerPolicy = "no-referrer";
+        image.onload = () => resolve(url);
+        image.onerror = () => reject(new Error("背景加载失败"));
+        image.src = url;
+      });
+    }
+
+    function openBackgroundDatabase() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(BACKGROUND_DB_NAME, 1);
+        request.onupgradeneeded = event => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains(BACKGROUND_DB_STORE)) db.createObjectStore(BACKGROUND_DB_STORE);
+        };
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+      });
+    }
+
+    async function getStoredBackgroundBlob() {
+      const db = await openBackgroundDatabase();
+      try {
+        return await requestToPromise(db.transaction(BACKGROUND_DB_STORE, "readonly").objectStore(BACKGROUND_DB_STORE).get(BACKGROUND_BLOB_KEY));
+      } finally {
+        db.close();
+      }
+    }
+
+    async function putStoredBackgroundBlob(blob) {
+      const db = await openBackgroundDatabase();
+      try {
+        const tx = db.transaction(BACKGROUND_DB_STORE, "readwrite");
+        tx.objectStore(BACKGROUND_DB_STORE).put(blob, BACKGROUND_BLOB_KEY);
+        await new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error);
+        });
+      } finally {
+        db.close();
+      }
+    }
+
+    async function applyStoredBackground() {
+      const blob = await getStoredBackgroundBlob();
+      if (!blob) return false;
+      const url = URL.createObjectURL(blob);
+      await loadImage(url);
+      setBackgroundImage(url, true);
+      return true;
+    }
+
+    async function downloadRemoteBackgroundBlob(url) {
+      try {
+        const response = await fetch(url, { cache: "no-store", mode: "cors" });
+        if (response.ok) return await response.blob();
+      } catch (error) {}
+
+      const image = new Image();
+      image.decoding = "async";
+      image.referrerPolicy = "no-referrer";
+      image.crossOrigin = "anonymous";
+      const loaded = new Promise((resolve, reject) => {
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error("背景加载失败"));
+      });
+      image.src = url;
+      await loaded;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = image.naturalWidth || image.width;
+      canvas.height = image.naturalHeight || image.height;
+      const context = canvas.getContext("2d", { alpha: false });
+      context.drawImage(image, 0, 0);
+
+      for (const mimeType of ["image/webp", "image/png"]) {
+        try {
+          const blob = await new Promise((resolve, reject) => {
+            canvas.toBlob(result => {
+              if (result) resolve(result);
+              else reject(new Error("背景转换失败"));
+            }, mimeType, mimeType === "image/webp" ? 0.92 : undefined);
+          });
+          if (blob) return blob;
+        } catch (error) {}
+      }
+      throw new Error("背景转换失败");
+    }
+
+    async function applyRemoteBackground() {
+      const token = ++backgroundRequestToken;
+      const url = BACKGROUND_API;
+      const blob = await downloadRemoteBackgroundBlob(url);
+      if (token !== backgroundRequestToken) return false;
+      await putStoredBackgroundBlob(blob);
+      const objectUrl = URL.createObjectURL(blob);
+      setBackgroundImage(objectUrl, true);
+      localStorage.setItem(BACKGROUND_MODE_KEY, "remote");
+      return true;
+    }
+
+    async function initializeBackground() {
+      setBackgroundBlur(localStorage.getItem(BACKGROUND_BLUR_KEY) || bgBlurInput.value);
+      const mode = localStorage.getItem(BACKGROUND_MODE_KEY) || "remote";
+      try {
+        if (await applyStoredBackground()) return;
+        if (mode === "remote") {
+          await applyRemoteBackground();
+          return;
+        }
+        setStatus("背景已丢失，请重新上传");
+      } catch (error) {
+        console.warn(error);
+      }
+    }
+
+    async function chooseRemoteBackground() {
+      try {
+        setStatus("正在加载背景...");
+        backgroundReadyPromise = applyRemoteBackground();
+        await backgroundReadyPromise;
+        setStatus("背景已更新");
+      } catch (error) {
+        console.error(error);
+        setStatus("背景加载失败");
+      }
+    }
+
+    async function chooseUploadedBackground(file) {
+      if (!file || !file.type.startsWith("image/")) {
+        setStatus("请选择图片文件");
+        return;
+      }
+      try {
+        setStatus("正在保存背景...");
+        backgroundRequestToken++;
+        backgroundReadyPromise = (async () => {
+          await putStoredBackgroundBlob(file);
+          localStorage.setItem(BACKGROUND_MODE_KEY, "custom");
+          return await applyStoredBackground();
+        })();
+        await backgroundReadyPromise;
+        setStatus("背景已更新");
+      } catch (error) {
+        console.error(error);
+        setStatus("背景保存失败");
+      }
+    }
+
+    function deleteDatabase(name) {
+      return requestToPromise(indexedDB.deleteDatabase(name));
+    }
+
+    function clearLocalProfile(prefix) {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(prefix)) localStorage.removeItem(key);
+      }
+    }
+
+    async function clearBrowserRuntimeCache() {
+      if ("serviceWorker" in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations().catch(() => []);
+        await Promise.all(registrations.map(registration => registration.unregister().catch(() => {})));
+      }
+      if ("caches" in window) {
+        const keys = await caches.keys().catch(() => []);
+        await Promise.all(keys.map(key => caches.delete(key).catch(() => {})));
+      }
+    }
+
+    function openDatabase(prefix) {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(prefix + "data", 4);
+        request.onupgradeneeded = event => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains("video")) db.createObjectStore("video", { keyPath: "time" });
+          if (!db.objectStoreNames.contains("image")) db.createObjectStore("image");
+          if (!db.objectStoreNames.contains("audio")) db.createObjectStore("audio");
+          if (!db.objectStoreNames.contains("config")) db.createObjectStore("config");
+          if (!db.objectStoreNames.contains("data")) db.createObjectStore("data");
+        };
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+      });
+    }
+
+    async function ensureDatabase(prefix, reset) {
+      const name = prefix + "data";
+      if (reset) {
+        await deleteDatabase(name).catch(() => {});
+      }
+      let db = await openDatabase(prefix);
+      let invalid = !db.objectStoreNames.contains("video");
+      if (!invalid) {
+        const tx = db.transaction("video", "readonly");
+        invalid = tx.objectStore("video").keyPath !== "time";
+      }
+      if (invalid) {
+        db.close();
+        await deleteDatabase(name);
+        db = await openDatabase(prefix);
+      }
+      return db;
+    }
+
+    function put(db, store, key, value) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(store, "readwrite");
+        tx.objectStore(store).put(value, key);
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    }
+
+    async function writeProfile(prefix, reset) {
+      if (reset) clearLocalProfile(prefix);
+      localStorage.setItem("gplv3_noname_alerted", "true");
+      localStorage.setItem("show_splash_off", "true");
+      sessionStorage.setItem("isJITReloaded", "true");
+      sessionStorage.setItem("canUseTs", "true");
+      localStorage.setItem(prefix + "directstart", "true");
+      localStorage.removeItem(prefix + "playback");
+      localStorage.removeItem(prefix + "playbackmode");
+      const db = await ensureDatabase(prefix, reset);
+      try {
+        for (const [key, value] of Object.entries(config)) {
+          await put(db, "config", key, value);
+        }
+        await put(db, "data", "brawl", brawlData);
+      } finally {
+        db.close();
+      }
+    }
+
+    async function resolveGameUrl() {
+      for (const url of ["../../noname.html", "../../index.html"]) {
+        try {
+          const response = await fetch(url, { method: "HEAD", cache: "no-store" });
+          if (response.ok) return url;
+        } catch (error) {}
+      }
+      return "../../index.html";
+    }
+
+    async function enter(reset) {
+      try {
+        const cleanProfile = true;
+        config[SKIN_CONFIG_KEY] = selectedSkin;
+        setStatus(reset ? "正在重置..." : "正在准备新对局...");
+        await backgroundReadyPromise.catch(() => {});
+        await clearBrowserRuntimeCache();
+        await Promise.all(CONFIG_PREFIXES.map(prefix => writeProfile(prefix, cleanProfile)));
+        const gameUrl = await resolveGameUrl();
+        location.replace(gameUrl + "?wuluxun=" + Date.now());
+      } catch (error) {
+        setStatus("启动失败：" + (error && error.message ? error.message : String(error)));
+        console.error(error);
+      }
+    }
+
+    document.getElementById("start").addEventListener("click", () => enter(true));
+    skinButtons.forEach(button => {
+      button.addEventListener("click", () => setSkin(button.dataset.skin));
+    });
+    bgRandomButton.addEventListener("click", () => chooseRemoteBackground());
+    bgUploadButton.addEventListener("click", () => bgFileInput.click());
+    bgFileInput.addEventListener("change", () => {
+      const file = bgFileInput.files && bgFileInput.files[0];
+      bgFileInput.value = "";
+      chooseUploadedBackground(file);
+    });
+    bgBlurInput.addEventListener("input", () => setBackgroundBlur(bgBlurInput.value));
+    setSkin(selectedSkin);
+    backgroundReadyPromise = initializeBackground();
+  </script>
+</body>
+</html>

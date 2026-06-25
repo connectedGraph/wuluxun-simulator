@@ -1,0 +1,6 @@
+webserver.pid
+webserver.log
+webserver.err.log
+.pw-*
+webroot-verify-*.png
+webroot-verify-*.json

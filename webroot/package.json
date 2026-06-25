@@ -1,0 +1,13 @@
+{
+  "name": "@noname/electron",
+  "version": "1.11.4",
+  "productName": "无名杀",
+  "license": "GPL-3.0-only",
+  "main": "app/main.js",
+  "type": "module",
+  "dependencies": {
+    "@electron/get": "^4.0.2",
+    "@electron/remote": "^2.1.3",
+    "@noname/fs": "workspace:*"
+  }
+}
