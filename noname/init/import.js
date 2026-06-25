@@ -2,11 +2,11 @@ import "../../noname.js";
 import { lib } from "../library/index.js";
 import { game } from "../game/index.js";
 async function importCardPack(name) {
-  await importFunction("card", `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.4/card/${name}`);
+  await importFunction("card", `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.6/card/${name}`);
 }
 async function importCharacterPack(name) {
   const alreadyModernCharacterPack = lib.config.moderned_characters || [];
-  const path = !alreadyModernCharacterPack.includes(name) ? `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.4/character/${name}/index` : `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.4/character/${name}`;
+  const path = !alreadyModernCharacterPack.includes(name) ? `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.6/character/${name}/index` : `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.6/character/${name}`;
   await importFunction("character", path).catch((e) => {
     console.error(`武将包《${name}》加载失败`, e);
   });
@@ -17,7 +17,7 @@ async function importExtension(name) {
     return;
   }
   try {
-    await importFunction("extension", `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.4/extension/${name}/extension`);
+    await importFunction("extension", `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.6/extension/${name}/extension`);
   } catch (e) {
     console.error(`扩展《${name}》加载失败`, e);
     let close = confirm(`扩展《${name}》加载失败，是否关闭此扩展？错误信息: 
@@ -37,7 +37,7 @@ async function importMode(name) {
     }
   }
   const alreadyModernMode = lib.config.moderned_modes || [];
-  const path = alreadyModernMode.includes(name) ? `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.4/mode/${name}/index` : `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.4/mode/${name}`;
+  const path = alreadyModernMode.includes(name) ? `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.6/mode/${name}/index` : `https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.6/mode/${name}`;
   await importFunction("mode", path);
 }
 async function importFunction(type, path) {

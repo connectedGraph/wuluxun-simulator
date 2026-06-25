@@ -8,7 +8,7 @@ import { defaultHooks } from "./hooks/index.js";
 import "../util/sandbox.js";
 import { assetURL, userAgentLowerCase, characterDefaultPicturePath } from "../util/index.js";
 import { defaultSplashs } from "../init/onload/index.js";
-import dedent from "../../node_modules/.pnpm/dedent@1.7.1/node_modules/dedent/dist/dedent.js";
+import dedent from "https://cdn.jsdelivr.net/npm/dedent@1.7.1/dist/dedent.js";
 import { PoptipManager } from "./poptip.js";
 import { ZhanfaManager } from "./zhanfa.js";
 import skills from "./skill.js";

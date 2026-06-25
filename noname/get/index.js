@@ -1,7 +1,7 @@
 import { Is } from "./is.js";
 import { Promises } from "./promises.js";
 import { rootURL } from "../../noname.js";
-import { pinyin, convert, addDict } from "../../node_modules/.pnpm/pinyin-pro@3.28.0/node_modules/pinyin-pro/dist/index.js";
+import { pinyin, convert, addDict } from "https://cdn.jsdelivr.net/npm/pinyin-pro@3.28.0/dist/index.js";
 import dictionary from "./pinyins/noname-dict.js";
 import { Audio } from "./audio.js";
 import { AsyncGeneratorFunction, AsyncFunction, GeneratorFunction, userAgentLowerCase } from "../util/index.js";
