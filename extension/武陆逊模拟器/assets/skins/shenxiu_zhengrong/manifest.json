@@ -1,0 +1,123 @@
+﻿{
+    "hero":  "武陆逊",
+    "skin":  "神秀峥嵘",
+    "character":  "wu_luxun",
+    "image":  "character/wu_luxun.png",
+    "sourceImage":  "C:\\Users\\18086\\Desktop\\神秀峥嵘\\神秀峥嵘-武陆逊-静态.png",
+    "quotes":  [
+                   {
+                       "skill":  "雄幕",
+                       "key":  "dcxiongmu",
+                       "index":  2,
+                       "text":  "子衿乘风，欲访东翁，仿青梅煮酒，论天下英雄。",
+                       "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_XiongMu_02.mp3",
+                       "file":  "dcxiongmu2.mp3"
+                   },
+                   {
+                       "skill":  "雄幕",
+                       "key":  "dcxiongmu",
+                       "index":  1,
+                       "text":  "天下扰扰，英雄欲定乾坤，非一人之力可成。",
+                       "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_XiongMu_01.mp3",
+                       "file":  "dcxiongmu1.mp3"
+                   },
+                   {
+                       "skill":  "彰才",
+                       "key":  "dczhangcai",
+                       "index":  1,
+                       "text":  "何日试青锋？匣中长剑夜夜鸣。",
+                       "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_ZhangCai_01.mp3",
+                       "file":  "dczhangcai1.mp3"
+                   },
+                   {
+                       "skill":  "彰才",
+                       "key":  "dczhangcai",
+                       "index":  2,
+                       "text":  "江东山河甫定，正乃用武之时。",
+                       "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_ZhangCai_02.mp3",
+                       "file":  "dczhangcai2.mp3"
+                   },
+                   {
+                       "skill":  "儒贤",
+                       "key":  "dcruxian",
+                       "index":  1,
+                       "text":  "辅君以礼，匡国以行，泽民以仁，此为大道。",
+                       "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_RuXian_01.mp3",
+                       "file":  "dcruxian1.mp3"
+                   },
+                   {
+                       "skill":  "儒贤",
+                       "key":  "dcruxian",
+                       "index":  2,
+                       "text":  "万卷书，千里路，文如引帆之风，可至梦日之处。",
+                       "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_RuXian_02.mp3",
+                       "file":  "dcruxian2.mp3"
+                   },
+                   {
+                       "skill":  "阵亡",
+                       "key":  "die",
+                       "index":  1,
+                       "text":  "清翠白鹿隐，寻踪不知归。",
+                       "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_Dead.mp3",
+                       "file":  "wu_luxun_die.mp3"
+                   }
+               ],
+    "downloads":  [
+                      {
+                          "skill":  "雄幕",
+                          "key":  "dcxiongmu",
+                          "file":  "dcxiongmu2.mp3",
+                          "proxy":  "http://127.0.0.1:7890",
+                          "bytes":  105781,
+                          "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_XiongMu_02.mp3"
+                      },
+                      {
+                          "skill":  "雄幕",
+                          "key":  "dcxiongmu",
+                          "file":  "dcxiongmu1.mp3",
+                          "proxy":  "http://127.0.0.1:7890",
+                          "bytes":  88093,
+                          "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_XiongMu_01.mp3"
+                      },
+                      {
+                          "skill":  "彰才",
+                          "key":  "dczhangcai",
+                          "file":  "dczhangcai1.mp3",
+                          "proxy":  "http://127.0.0.1:7890",
+                          "bytes":  81290,
+                          "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_ZhangCai_01.mp3"
+                      },
+                      {
+                          "skill":  "彰才",
+                          "key":  "dczhangcai",
+                          "file":  "dczhangcai2.mp3",
+                          "proxy":  "http://127.0.0.1:7890",
+                          "bytes":  63086,
+                          "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_ZhangCai_02.mp3"
+                      },
+                      {
+                          "skill":  "儒贤",
+                          "key":  "dcruxian",
+                          "file":  "dcruxian1.mp3",
+                          "proxy":  "http://127.0.0.1:7890",
+                          "bytes":  90821,
+                          "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_RuXian_01.mp3"
+                      },
+                      {
+                          "skill":  "儒贤",
+                          "key":  "dcruxian",
+                          "file":  "dcruxian2.mp3",
+                          "proxy":  "http://127.0.0.1:7890",
+                          "bytes":  97807,
+                          "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_RuXian_02.mp3"
+                      },
+                      {
+                          "skill":  "阵亡",
+                          "key":  "die",
+                          "file":  "wu_luxun_die.mp3",
+                          "proxy":  "http://127.0.0.1:7890",
+                          "bytes":  67044,
+                          "source":  "https://web.sanguosha.com/10/pc/res/assets/runtime/voice/skin/wuluxun02/WuLuXun_Dead.mp3"
+                      }
+                  ]
+}
