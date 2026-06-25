@@ -14,7 +14,7 @@ import { game } from "./game/index.js";
 (async () => {
   try {
     lib.device = device;
-    const path = "https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.6/preload.js";
+    const path = "https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.7/preload.js";
     const { default: preload } = await import(
       /* @vite-ignore */
       path

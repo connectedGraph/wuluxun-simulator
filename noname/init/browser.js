@@ -6,7 +6,7 @@ async function browserReady({ lib, game }) {
 		return { default: path };
 	}, true ? [] : void 0, import.meta.url)).default;
 
-	const __DEPLOY_BASE__ = "https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.6/";
+	const __DEPLOY_BASE__ = "https://cdn.jsdelivr.net/gh/connectedGraph/wuluxun-simulator@v1.0.7/";
 
 	function toResourceURL(fileName) {
 		const text = String(fileName || "").replace(/\\/g, "/");
