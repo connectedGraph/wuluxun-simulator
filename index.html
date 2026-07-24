@@ -237,11 +237,13 @@
     const SIM_VERSION = "0.4.3";
     const BRAWL_KEY = "wuluxun_simulator";
     const CARD_SKIN = "decade";
-    const BACKGROUND_API = "https://api.rls.ovh/horizontal";
+    const BACKGROUND_CATALOG_FILE = "backgrounds.json";
     const BACKGROUND_DB_NAME = "wuluxun_launcher_assets";
     const BACKGROUND_DB_STORE = "assets";
     const BACKGROUND_BLOB_KEY = "background_blob";
     const BACKGROUND_MODE_KEY = "wuluxun_launcher_bg_mode";
+    const BACKGROUND_REMOTE_URL_KEY = "wuluxun_launcher_bg_remote_url";
+    const BACKGROUND_REMOTE_PID_KEY = "wuluxun_launcher_bg_remote_pid";
     const BACKGROUND_BLUR_KEY = "wuluxun_launcher_bg_blur";
     const SKIN_CONFIG_KEY = "extension_" + SIM_NAME + "_wuluxunSkin";
     const SKIN_STORAGE_KEY = "wuluxun_simulator_skin";
@@ -442,6 +444,21 @@
       }
     }
 
+    async function deleteStoredBackgroundBlob() {
+      const db = await openBackgroundDatabase();
+      try {
+        const tx = db.transaction(BACKGROUND_DB_STORE, "readwrite");
+        tx.objectStore(BACKGROUND_DB_STORE).delete(BACKGROUND_BLOB_KEY);
+        await new Promise((resolve, reject) => {
+          tx.oncomplete = resolve;
+          tx.onerror = () => reject(tx.error);
+          tx.onabort = () => reject(tx.error);
+        });
+      } finally {
+        db.close();
+      }
+    }
+
     async function applyStoredBackground() {
       const blob = await getStoredBackgroundBlob();
       if (!blob) return false;
@@ -451,52 +468,84 @@
       return true;
     }
 
-    async function downloadRemoteBackgroundBlob(url) {
+    function normalizeRemoteBackground(item) {
+      if (!item || item.r18 !== false) return null;
+      const width = Number(item.width);
+      const height = Number(item.height);
+      if (!Number.isFinite(width) || !Number.isFinite(height) || width / height < 1.2) return null;
       try {
-        const response = await fetch(url, { cache: "no-store", mode: "cors" });
-        if (response.ok) return await response.blob();
-      } catch (error) {}
-
-      const image = new Image();
-      image.decoding = "async";
-      image.referrerPolicy = "no-referrer";
-      image.crossOrigin = "anonymous";
-      const loaded = new Promise((resolve, reject) => {
-        image.onload = () => resolve();
-        image.onerror = () => reject(new Error("背景加载失败"));
-      });
-      image.src = url;
-      await loaded;
-
-      const canvas = document.createElement("canvas");
-      canvas.width = image.naturalWidth || image.width;
-      canvas.height = image.naturalHeight || image.height;
-      const context = canvas.getContext("2d", { alpha: false });
-      context.drawImage(image, 0, 0);
-
-      for (const mimeType of ["image/webp", "image/png"]) {
-        try {
-          const blob = await new Promise((resolve, reject) => {
-            canvas.toBlob(result => {
-              if (result) resolve(result);
-              else reject(new Error("背景转换失败"));
-            }, mimeType, mimeType === "image/webp" ? 0.92 : undefined);
-          });
-          if (blob) return blob;
-        } catch (error) {}
+        const url = new URL(String(item.url));
+        if (url.protocol !== "https:" || url.hostname !== "i.pixiv.re") return null;
+        return {
+          pid: String(item.pid),
+          url: url.href,
+          width,
+          height,
+        };
+      } catch (error) {
+        return null;
       }
-      throw new Error("背景转换失败");
+    }
+
+    function selectRemoteBackground(candidates) {
+      const viewportWidth = Math.max(1, window.innerWidth || document.documentElement.clientWidth || 1);
+      const viewportHeight = Math.max(1, window.innerHeight || document.documentElement.clientHeight || 1);
+      const viewportRatio = viewportWidth / viewportHeight;
+      const lastPid = localStorage.getItem(BACKGROUND_REMOTE_PID_KEY);
+      const ranked = candidates
+        .map(candidate => {
+          const imageRatio = candidate.width / candidate.height;
+          return {
+            candidate,
+            visibleFraction: Math.min(imageRatio / viewportRatio, viewportRatio / imageRatio),
+          };
+        })
+        .sort((a, b) => b.visibleFraction - a.visibleFraction);
+      const minimumVisibleFraction = ranked[0].visibleFraction * 0.9;
+      const best = ranked
+        .filter(item => item.visibleFraction >= minimumVisibleFraction)
+        .slice(0, 5)
+        .map(item => item.candidate);
+      const pool = best.filter(candidate => candidate.pid !== lastPid);
+      const choices = pool.length ? pool : best;
+      return choices[Math.floor(Math.random() * choices.length)];
+    }
+
+    async function getRemoteBackgroundCandidates() {
+      const response = await fetch(ROOT_PREFIX + BACKGROUND_CATALOG_FILE, { cache: "no-store" });
+      if (!response.ok) throw new Error("背景目录加载失败");
+      const payload = await response.json();
+      if (!payload || !Array.isArray(payload.data)) throw new Error("背景目录格式错误");
+      const candidates = payload.data.map(normalizeRemoteBackground).filter(Boolean);
+      if (!candidates.length) throw new Error("背景目录中没有可用横图");
+      return candidates;
     }
 
     async function applyRemoteBackground() {
       const token = ++backgroundRequestToken;
-      const url = BACKGROUND_API;
-      const blob = await downloadRemoteBackgroundBlob(url);
+      const candidates = await getRemoteBackgroundCandidates();
+      const background = selectRemoteBackground(candidates);
+      await loadImage(background.url);
       if (token !== backgroundRequestToken) return false;
-      await putStoredBackgroundBlob(blob);
-      const objectUrl = URL.createObjectURL(blob);
-      setBackgroundImage(objectUrl, true);
+      setBackgroundImage(background.url);
       localStorage.setItem(BACKGROUND_MODE_KEY, "remote");
+      localStorage.setItem(BACKGROUND_REMOTE_URL_KEY, background.url);
+      localStorage.setItem(BACKGROUND_REMOTE_PID_KEY, background.pid);
+      deleteStoredBackgroundBlob().catch(() => {});
+      return true;
+    }
+
+    async function applyStoredRemoteBackground() {
+      const background = normalizeRemoteBackground({
+        pid: localStorage.getItem(BACKGROUND_REMOTE_PID_KEY) || "stored",
+        url: localStorage.getItem(BACKGROUND_REMOTE_URL_KEY),
+        width: 2,
+        height: 1,
+        r18: false,
+      });
+      if (!background) return false;
+      await loadImage(background.url);
+      setBackgroundImage(background.url);
       return true;
     }
 
@@ -504,11 +553,15 @@
       setBackgroundBlur(localStorage.getItem(BACKGROUND_BLUR_KEY) || bgBlurInput.value);
       const mode = localStorage.getItem(BACKGROUND_MODE_KEY) || "remote";
       try {
-        if (await applyStoredBackground()) return;
         if (mode === "remote") {
-          await applyRemoteBackground();
+          try {
+            await applyRemoteBackground();
+          } catch (error) {
+            if (!await applyStoredRemoteBackground().catch(() => false)) throw error;
+          }
           return;
         }
+        if (await applyStoredBackground()) return;
         setStatus("背景已丢失，请重新上传");
       } catch (error) {
         console.warn(error);
@@ -538,6 +591,8 @@
         backgroundReadyPromise = (async () => {
           await putStoredBackgroundBlob(file);
           localStorage.setItem(BACKGROUND_MODE_KEY, "custom");
+          localStorage.removeItem(BACKGROUND_REMOTE_URL_KEY);
+          localStorage.removeItem(BACKGROUND_REMOTE_PID_KEY);
           return await applyStoredBackground();
         })();
         await backgroundReadyPromise;
