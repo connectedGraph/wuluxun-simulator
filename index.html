@@ -649,7 +649,7 @@
         const cleanProfile = true;
         config[SKIN_CONFIG_KEY] = selectedSkin;
         setStatus(reset ? "正在重置..." : "正在准备新对局...");
-        await backgroundReadyPromise.catch(() => {});
+        backgroundReadyPromise.catch(() => {});
         await clearBrowserRuntimeCache();
         await Promise.all(CONFIG_PREFIXES.map(prefix => writeProfile(prefix, cleanProfile)));
         const gameUrl = await resolveGameUrl();

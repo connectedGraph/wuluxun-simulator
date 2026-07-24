@@ -1,13 +1,16 @@
-import "../../noname.js";
+import { rootURL } from "../../noname.js";
 import { lib } from "../library/index.js";
 import { game } from "../game/index.js";
+function contentURL(path) {
+  return new URL(path, rootURL).href;
+}
 async function importCardPack(name) {
-  await importFunction("card", `./card/${name}`);
+  await importFunction("card", contentURL(`card/${name}`));
 }
 async function importCharacterPack(name) {
   const alreadyModernCharacterPack = lib.config.moderned_characters || [];
-  const path = !alreadyModernCharacterPack.includes(name) ? `./character/${name}/index` : `./character/${name}`;
-  await importFunction("character", path).catch((e) => {
+  const path = !alreadyModernCharacterPack.includes(name) ? `character/${name}/index` : `character/${name}`;
+  await importFunction("character", contentURL(path)).catch((e) => {
     console.error(`武将包《${name}》加载失败`, e);
   });
 }
@@ -17,7 +20,7 @@ async function importExtension(name) {
     return;
   }
   try {
-    await importFunction("extension", `./extension/${name}/extension`);
+    await importFunction("extension", contentURL(`extension/${name}/extension`));
   } catch (e) {
     console.error(`扩展《${name}》加载失败`, e);
     let close = confirm(`扩展《${name}》加载失败，是否关闭此扩展？错误信息: 
@@ -37,8 +40,8 @@ async function importMode(name) {
     }
   }
   const alreadyModernMode = lib.config.moderned_modes || [];
-  const path = alreadyModernMode.includes(name) ? `./mode/${name}/index` : `./mode/${name}`;
-  await importFunction("mode", path);
+  const path = alreadyModernMode.includes(name) ? `mode/${name}/index` : `mode/${name}`;
+  await importFunction("mode", contentURL(path));
 }
 async function importFunction(type, path) {
   const modeContent = await import(

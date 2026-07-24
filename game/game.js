@@ -22,10 +22,10 @@
 	im.type = "importmap";
 	im.textContent = `{
   "imports": {
-    "noname": "/noname.js",
-    "vue": "/node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.js",
-    "pinyin-pro": "/node_modules/.pnpm/pinyin-pro@3.28.0/node_modules/pinyin-pro/dist/index.js",
-    "dedent": "/node_modules/.pnpm/dedent@1.7.1/node_modules/dedent/dist/dedent.js"
+    "noname": "./noname.js",
+    "vue": "./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.js",
+    "pinyin-pro": "./node_modules/.pnpm/pinyin-pro@3.28.0/node_modules/pinyin-pro/dist/index.js",
+    "dedent": "./node_modules/.pnpm/dedent@1.7.1/node_modules/dedent/dist/dedent.js"
   }
 }`;
 	document.currentScript.after(im);
@@ -95,6 +95,6 @@
 
 	const script = document.createElement("script");
 	script.type = "module";
-	script.src = "/noname/entry.js";
+	script.src = new URL("../noname/entry.js", document.currentScript.src).href;
 	document.head.appendChild(script);
 })();
