@@ -23,7 +23,7 @@
 	im.textContent = `{
   "imports": {
     "noname": "./noname.js",
-    "vue": "./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.js",
+    "vue": "./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.prod.js",
     "pinyin-pro": "./node_modules/.pnpm/pinyin-pro@3.28.0/node_modules/pinyin-pro/dist/index.js",
     "dedent": "./node_modules/.pnpm/dedent@1.7.1/node_modules/dedent/dist/dedent.js"
   }

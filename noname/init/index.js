@@ -29,7 +29,7 @@ async function boot() {
   }
   await __vitePreload(() => import("./polyfill.js"), true ? __vite__mapDeps([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206]) : void 0, import.meta.url);
   const configLoadTime = parseInt(localStorage.getItem(lib.configprefix + "loadtime") || "10000");
-  const resetGameTimeout = setTimeout(lib.init.reset, configLoadTime);
+  const resetGameTimeout = window.__wuluxunStatic ? void 0 : setTimeout(lib.init.reset, configLoadTime);
   setBackground();
   lib.get = get;
   lib.ui = ui;
@@ -445,7 +445,9 @@ async function boot() {
     if (!splashInRemoing) {
       node.remove();
     }
-    window.resetGameTimeout = setTimeout(lib.init.reset, 1e4);
+    if (!window.__wuluxunStatic) {
+      window.resetGameTimeout = setTimeout(lib.init.reset, 1e4);
+    }
     delete window.inSplash;
     game.saveConfig("mode", result);
     await importMode(result);
@@ -729,7 +731,7 @@ async function loadConfig() {
   });
   lib.db = event.target.result;
   let result;
-  const hasConfigTxt = await game.promises.checkFile("noname.config.txt") === 1;
+  const hasConfigTxt = !window.__wuluxunStatic && await game.promises.checkFile("noname.config.txt") === 1;
   if (hasConfigTxt) {
     try {
       const configStr = await game.promises.readFileAsText("noname.config.txt");
@@ -788,7 +790,7 @@ async function loadCss() {
     default: lib.init.promises.css(lib.assetURL + "layout/default", "layout"),
     layout: lib.init.promises.css(lib.assetURL + "layout/" + game.layout, "layout", void 0, true),
     theme: lib.init.promises.css(lib.assetURL + "theme/" + get$1("theme"), "style", void 0, true),
-    card_style: lib.init.promises.css(lib.assetURL + "theme/style/card", get$1("card_style"), void 0, true),
+    card_style: lib.init.promises.css(lib.assetURL + "theme/style/card", get$1("card_style") || "default", void 0, true),
     cardback_style: lib.init.promises.css(lib.assetURL + "theme/style/cardback", get$1("cardback_style"), void 0, true),
     hp_style: lib.init.promises.css(lib.assetURL + "theme/style/hp", get$1("hp_style"), void 0, true),
     phone: get.is.phoneLayout() ? lib.init.promises.css(lib.assetURL + "layout/default", "phone", void 0, true) : lib.init.css(),

@@ -2475,6 +2475,10 @@ class Game {
     if (typeof card === "string") {
       card = { name: card };
     }
+    // The upstream asset set has no card voice for tao; recovery plays its own effect audio.
+    if (card.name === "tao") {
+      return;
+    }
     if (get.itemtype(sex) === "player") {
       sex = sex.sex == "female" ? "female" : "male";
     } else if (typeof sex == "string") {

@@ -179,7 +179,7 @@ function loadCharacter(character) {
               }
             } else if (Array.isArray(lib[key][key2]) && Array.isArray(value2)) {
               lib[key][key2].addArray(value2);
-            } else {
+            } else if (lib[key][key2] !== value2) {
               console.log(`duplicated ${key} in character ${name}:
 ${key2}:
 lib.${key}.${key2}`, lib[key][key2], `

@@ -1,6 +1,7 @@
 ﻿<!doctype html>
 
 <head>
+  <link rel="icon" href="data:,">
   <style id="wuluxun-startup-hide">
     .main.menu.dialog {
       display: none !important;
@@ -16,12 +17,13 @@
   <script type="importmap">{
   "imports": {
     "noname": "./noname.js",
-    "vue": "./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.js",
+    "vue": "./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.prod.js",
     "pinyin-pro": "./node_modules/.pnpm/pinyin-pro@3.28.0/node_modules/pinyin-pro/dist/index.js",
     "dedent": "./node_modules/.pnpm/dedent@1.7.1/node_modules/dedent/dist/dedent.js"
   }
 }</script>
   <script type="module">
+    window.__wuluxunStatic = true;
     sessionStorage.setItem("isJITReloaded", "true");
     sessionStorage.setItem("canUseTs", "true");
     if ("serviceWorker" in navigator) {
@@ -316,7 +318,7 @@
   <script type="module" crossorigin src="./noname/library/element/index.js"></script>
   <script type="module" crossorigin src="./noname/ui/create/menu/pages/exetensionMenu.js"></script>
   <script type="module" crossorigin src="./noname/ui/create/menu/pages/optionsMenu.js"></script>
-  <script type="module" crossorigin src="./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.js"></script>
+  <script type="module" crossorigin src="./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.prod.js"></script>
   <script type="module" crossorigin src="./noname/ui/create/menu/pages/otherMenu.js"></script>
   <script type="module" crossorigin src="./noname/ui/create/menu/pages/startMenu.js"></script>
   <script type="module" crossorigin src="./noname/ui/create/index.js"></script>
@@ -338,8 +340,8 @@
   <script type="module" crossorigin src="./noname/library/experimental/index.js"></script>
   <script type="module" crossorigin src="./noname/library/update-urls.js"></script>
   <script type="module" crossorigin src="./noname/library/hooks/index.js"></script>
-  <script type="module" crossorigin src="./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.js"></script>
-  <script type="module" crossorigin src="./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.js"></script>
+  <script type="module" crossorigin src="./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.prod.js"></script>
+  <script type="module" crossorigin src="./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.prod.js"></script>
   <script type="module" crossorigin src="./noname/init/onload/OnloadSplash.vue2.js"></script>
   <script type="module" crossorigin src="./noname/init/onload/OnloadSplash.vue.js"></script>
   <script type="module" crossorigin src="./noname/init/onload/default-splash.js"></script>
@@ -383,7 +385,7 @@
   <script type="module" crossorigin src="./_virtual/index6.js"></script>
   <script type="module" crossorigin src="./node_modules/.pnpm/core-js-bundle@3.48.0/node_modules/core-js-bundle/index.js"></script>
   <script type="module" crossorigin src="./_virtual/index.js"></script>
-  <script type="module" crossorigin src="./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.js"></script>
-  <script type="module" crossorigin src="./noname/entry.js?v=1.0.7"></script>
+  <script type="module" crossorigin src="./node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.prod.js"></script>
+  <script type="module" crossorigin src="./noname/entry.js?v=1.0.8"></script>
 </head>
 

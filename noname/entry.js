@@ -4,7 +4,7 @@ import "../noname.js";
 import { boot } from "./init/index.js";
 import { device, userAgentLowerCase } from "./util/index.js";
 import "../_virtual/index.js";
-import "../node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.js";
+import "../node_modules/.pnpm/vue@3.5.28/node_modules/vue/dist/vue.esm-browser.prod.js";
 import { lib } from "./library/index.js";
 import { ai } from "./ai/index.js";
 import { ui } from "./ui/index.js";
@@ -14,7 +14,7 @@ import { game } from "./game/index.js";
 (async () => {
   try {
     lib.device = device;
-    const path = "./preload.js";
+    const path = "../preload.js";
     const { default: preload } = await import(
       /* @vite-ignore */
       path
