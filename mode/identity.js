@@ -1576,7 +1576,13 @@ const identity = () => {
         const next = game.createEvent("chooseCharacter");
         next.setContent(async (event, trigger, player) => {
           ui.arena.classList.add("choose-character");
-          
+
+          // 0. Disarm the "game not loaded" watchdog: directstart skips the menus
+          // that normally clear it, so the confirm dialog would fire mid-game.
+          clearTimeout(window.resetGameTimeout);
+          delete window.resetGameTimeout;
+          game.saveConfig("loadtime", 30000);
+
           // 1. Force identity assignment
           game.zhu = game.me;
           game.me.identity = "zhu";
@@ -1678,20 +1684,41 @@ const identity = () => {
             }).finally(() => db.close());
           };
           const blob = await getBlob().catch(() => null);
+          const readLauncherBlur = () => {
+            const raw = localStorage.getItem("wuluxun_launcher_bg_blur");
+            if (raw === null || raw === "") return 10;
+            const num = Number(raw);
+            return Number.isFinite(num) ? Math.max(0, num) : 10;
+          };
           if (blob) {
-            const url = URL.createObjectURL(blob);
+            var wuluxunBgUrl = URL.createObjectURL(blob);
+            var applyGameBackground = () => {
+              const nodes = [ui.background, document.querySelector(".background")].filter(Boolean);
+              const blurVal = readLauncherBlur();
+              for (const node of nodes) {
+                node.style.setProperty("background-image", `url(${JSON.stringify(wuluxunBgUrl)})`, "important");
+                node.style.setProperty("background-position", "center", "important");
+                node.style.setProperty("background-size", "cover", "important");
+                node.style.setProperty("background-repeat", "no-repeat", "important");
+                node.style.setProperty("filter", `blur(${blurVal}px)`, "important");
+                node.style.setProperty("transform", "scale(1.04)", "important");
+                node.style.setProperty("opacity", "1", "important");
+                node.classList.add("wuluxun-native-background");
+              }
+            };
             document.body.classList.add("wuluxun-game-background-active");
-            const nodes = [ui.background, document.querySelector(".background")].filter(Boolean);
-            const blurVal = Number(localStorage.getItem("wuluxun_launcher_bg_blur")) || 10;
-            for (const node of nodes) {
-              node.style.setProperty("background-image", `url(${JSON.stringify(url)})`, "important");
-              node.style.setProperty("background-position", "center", "important");
-              node.style.setProperty("background-size", "cover", "important");
-              node.style.setProperty("background-repeat", "no-repeat", "important");
-              node.style.setProperty("filter", `blur(${blurVal}px)`, "important");
-              node.style.setProperty("transform", "scale(1.04)", "important");
-              node.style.setProperty("opacity", "1", "important");
-              node.classList.add("wuluxun-native-background");
+            applyGameBackground();
+            // game.updateBackground() rebuilds .background and drops our inline
+            // styles; re-apply right after each rebuild instead of waiting for
+            // the polling interval.
+            if (typeof game.updateBackground === "function" && !game.updateBackground.__wuluxunPatched) {
+              const originalUpdateBackground = game.updateBackground;
+              game.updateBackground = function (...args) {
+                const result = originalUpdateBackground.apply(this, args);
+                applyGameBackground();
+                return result;
+              };
+              game.updateBackground.__wuluxunPatched = true;
             }
           }
           
@@ -1717,6 +1744,9 @@ const identity = () => {
               "#roundmenu,#autobutton,#pausebutton,#system .wuluxun-hidden{display:none!important}",
               ".menubutton.round.highlight,.buttonyjcm,body>img[src*='CD/button3.png']{display:none!important}",
               ".player.wuluxun-shenxiu-skin>.avatar{background-position:58% 36%!important;background-size:auto 118%!important}",
+              "body>img[src*='wenhao.png']{display:none!important;pointer-events:none!important}",
+              "#arenalog{top:12px!important;left:auto!important;right:14px!important;width:300px!important;max-width:300px!important;height:auto!important;max-height:40vh!important;margin:0!important;background:none!important;pointer-events:none!important;text-align:right!important;font-size:14px!important;line-height:1.5!important}",
+              "#arenalog>div{background:none!important;animation:none!important;opacity:1!important;color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 6px rgba(0,0,0,.7)!important;}",
             ].join("\n")
           );
           
@@ -1764,6 +1794,11 @@ const identity = () => {
           };
           keepMinimal();
           setInterval(keepMinimal, 500);
+          setInterval(() => {
+            if (typeof applyGameBackground === "function" && !document.querySelector(".background.wuluxun-native-background")) {
+              applyGameBackground();
+            }
+          }, 800);
           
           // Audio Probes
           window.wuluxunAudioTest = () => {

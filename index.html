@@ -298,6 +298,7 @@
       version: GAME_VERSION,
       asset_version: "\u65e0",
       show_splash: "off",
+      loadtime: 30000,
       extensions: [DECADE_NAME],
       extension_auto_import: false,
       new_tutorial: true,
@@ -616,6 +617,7 @@
       if (reset) clearLocalProfile(prefix);
       localStorage.setItem("gplv3_noname_alerted", "true");
       localStorage.setItem("show_splash_off", "true");
+      localStorage.setItem(prefix + "loadtime", String(config.loadtime));
       sessionStorage.setItem("isJITReloaded", "true");
       sessionStorage.setItem("canUseTs", "true");
       localStorage.setItem(prefix + "directstart", "true");

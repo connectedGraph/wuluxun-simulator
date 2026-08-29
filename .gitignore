@@ -5,3 +5,4 @@ webserver.err.log
 webroot-verify-*.png
 webroot-verify-*.json
 node_modules/
+.webserver.py

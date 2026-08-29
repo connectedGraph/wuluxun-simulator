@@ -41,15 +41,42 @@ foreach ($listener in ($listeners | Sort-Object OwningProcess -Unique)) {
     }
 }
 
+# No-store static server: a tiny inline handler so the browser never heuristically
+# caches game modules (mode/identity.js etc.), which otherwise serves stale code
+# after every edit.
+$serverScript = @'
+import http.server
+import socketserver
+import sys
+
+PORT = int(sys.argv[1])
+ROOT = sys.argv[2]
+
+class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        self.send_header("Expires", "0")
+        super().end_headers()
+
+class ThreadingTCPServer(socketserver.ThreadingTCPServer):
+    allow_reuse_address = True
+
+with ThreadingTCPServer(("127.0.0.1", PORT), NoCacheHandler) as httpd:
+    httpd.serve_forever()
+'@
+$serverPy = Join-Path $resolvedProjectRoot ".webserver.py"
+Set-Content -LiteralPath $serverPy -Encoding UTF8 -Value $serverScript
+
 $python = Get-Command python -ErrorAction SilentlyContinue
-$pythonArgs = @("-m", "http.server", "$Port", "--bind", "127.0.0.1", "--directory", $resolvedWebRoot)
+$pythonArgs = @($serverPy, "$Port", $resolvedWebRoot)
 if (!$python) {
     $python = Get-Command py -ErrorAction SilentlyContinue
-    $pythonArgs = @("-3", "-m", "http.server", "$Port", "--bind", "127.0.0.1", "--directory", $resolvedWebRoot)
+    $pythonArgs = @("-3", $serverPy, "$Port", $resolvedWebRoot)
 }
 if (!$python) {
     throw "Python was not found. Install Python or start any static server from $resolvedWebRoot on port $Port."
 }
+
 
 if (Test-Path -LiteralPath $logFile) {
     Remove-Item -LiteralPath $logFile -Force
