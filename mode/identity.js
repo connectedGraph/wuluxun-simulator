@@ -1632,6 +1632,8 @@ const identity = () => {
             lib.translate.wu_luxun_shenxiu_zhengrong = `${shenxiuSkin.name}*${get.translation("wu_luxun")}`;
             
             // Skill audios mapping
+            // NOTE: audioname2 paths are resolved by game.playAudio which prepends
+            // "audio/" itself, so the path must NOT start with "audio/".
             const shenxiuSkillAudio = {
               dcxiongmu: 2,
               dczhangcai: 2,
@@ -1641,11 +1643,11 @@ const identity = () => {
               const info = lib.skill?.[skill];
               if (info) {
                 info.audioname2 ??= {};
-                info.audioname2.wu_luxun = `${shenxiuSkin.audioBase}:${count}`;
+                info.audioname2.wu_luxun = `${shenxiuSkin.audioBase.replace(/^audio\//, "")}:${count}`;
               }
             }
             if (lib.character?.wu_luxun) {
-              lib.character.wu_luxun.dieAudios = [`${shenxiuSkin.audioBase}/wu_luxun_die.mp3`];
+              lib.character.wu_luxun.dieAudios = [`${shenxiuSkin.audioBase.replace(/^audio\//, "")}/wu_luxun_die.mp3`];
             }
           }
           
