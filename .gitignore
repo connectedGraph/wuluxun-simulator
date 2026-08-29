@@ -4,3 +4,4 @@ webserver.err.log
 .pw-*
 webroot-verify-*.png
 webroot-verify-*.json
+node_modules/

@@ -1,6 +1,5 @@
 param(
-    [int]$Port = 8089,
-    [string]$WebRoot = "D:\Git-Program\wuluxun-simulator\webroot"
+    [int]$Port = 8089
 )
 
 [Console]::InputEncoding = [System.Text.Encoding]::UTF8
@@ -10,18 +9,10 @@ $ErrorActionPreference = "Stop"
 
 $projectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $resolvedProjectRoot = [System.IO.Path]::GetFullPath($projectRoot)
-$resolvedWebRoot = [System.IO.Path]::GetFullPath($WebRoot)
+$resolvedWebRoot = $resolvedProjectRoot
 $pidFile = Join-Path $projectRoot "webserver.pid"
 $logFile = Join-Path $projectRoot "webserver.log"
 $errFile = Join-Path $projectRoot "webserver.err.log"
-
-if (!(Test-Path -LiteralPath $resolvedWebRoot)) {
-    & (Join-Path $projectRoot "scripts\build-webroot.ps1") -WebRoot $resolvedWebRoot
-}
-
-if (!$resolvedWebRoot.StartsWith($resolvedProjectRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
-    throw "Refusing to serve outside project root: $resolvedWebRoot"
-}
 
 if (Test-Path -LiteralPath $pidFile) {
     $oldPidText = Get-Content -LiteralPath $pidFile -Encoding UTF8 -ErrorAction SilentlyContinue

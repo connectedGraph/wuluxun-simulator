@@ -1,61 +1,67 @@
-# 武陆逊模拟器
+# 无名杀
 
-这是无名杀的独立网页适配层，围绕“武陆逊 vs 兀突骨”做成一个可直接部署的单挑启动器。
+## 项目使用约定
 
-## 运行
+本项目基于 GPL 3.0 协议开源，使用此项目时请遵守开源协议。  
+除此外，希望你在使用代码时已经了解以下额外说明：
 
-构建精简网页目录：
+1. 打包、二次分发 **请保留代码出处**：<https://github.com/libnoname/noname>
+2. 请不要用于商业用途。
 
-```powershell
-[Console]::InputEncoding=[System.Text.Encoding]::UTF8; [Console]::OutputEncoding=[System.Text.Encoding]::UTF8; & 'D:\Git-Program\wuluxun-simulator\scripts\build-webroot.ps1'
+## 快速启动
+
+### 环境要求
+
+> **提示：** 请参考 [本地文档](./docs/how-to-start.md) 或 [github文档](https://github.com/libnoname/noname/wiki/%E5%A6%82%E4%BD%95%E8%BF%90%E8%A1%8C%E6%97%A0%E5%90%8D%E6%9D%80%EF%BC%88%E7%A8%8B%E5%BA%8F%E5%91%98%E7%89%88%EF%BC%89) 配置环境。
+
+- [Node.js](https://nodejs.org/) ^20.19.0 || >=22.12.0
+- [pnpm](https://pnpm.io/) >= 9
+- Webview: Chromium >= 91 || Safari >=16.4.0 (暂不支持Firefox)
+
+### 安装依赖
+
+```bash
+pnpm install
 ```
 
-启动静态服务器：
+### 启动
 
-```powershell
-[Console]::InputEncoding=[System.Text.Encoding]::UTF8; [Console]::OutputEncoding=[System.Text.Encoding]::UTF8; & 'D:\Git-Program\wuluxun-simulator\scripts\start-web.ps1'
+```bash
+pnpm dev
 ```
 
-入口：
+---
 
-`http://127.0.0.1:8089/`
+贡献代码可阅读相关文档：
 
-## 当前状态
+[Git 下载安装指南](https://github.com/libnoname/noname/wiki/Git%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85%E6%8C%87%E5%8D%97)
 
-- 启动页标题是 `武陆逊模拟器`
-- 主按钮是 `启动`
-- 入口只保留 `经典形象` / `神秀峥嵘`
-- 对局固定两人：玩家武陆逊，对方兀突骨
-- 对方保留原版 AI
-- UI 使用 `十周年UI`
-- 牌面、音效、武陆逊专属语音已保留
-- 背景支持随机、上传和模糊调节
-- 随机背景会先存进 IndexedDB，进入对局后只读本地缓存，不会再请求远端 API
-- 对局内只保留必要入口，方便后续继续解耦和部署
-- 部署时直接发布 `webroot`，再用 nginx 反代即可
+[Github 桌面版客户端使用入门](https://docs.github.com/zh/desktop/overview/getting-started-with-github-desktop)
 
-## 神秀峥嵘素材
+[如何提交代码到《无名杀》Github 仓库](https://github.com/libnoname/noname/wiki/%E5%A6%82%E4%BD%95%E6%8F%90%E4%BA%A4%E4%BB%A3%E7%A0%81%E5%88%B0%E3%80%8A%E6%97%A0%E5%90%8D%E6%9D%80%E3%80%8BGithub%E4%BB%93%E5%BA%93)
 
-导入桌面素材目录：
+[《无名杀》项目 Pull Request 提交规范](https://github.com/libnoname/noname/wiki/%E3%80%8A%E6%97%A0%E5%90%8D%E6%9D%80%E3%80%8B%E9%A1%B9%E7%9B%AE-Pull-Request-%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83)
 
-```powershell
-[Console]::InputEncoding=[System.Text.Encoding]::UTF8; [Console]::OutputEncoding=[System.Text.Encoding]::UTF8; & 'D:\Git-Program\wuluxun-simulator\scripts\import-shenxiu-assets.ps1' -SourceDir 'C:\Users\18086\Desktop\神秀峥嵘'
-```
+客户端下载戳这里：
 
-约定文件：
+安卓： <https://github.com/nonameShijian/noname-shijian-android/releases/tag/v1.6.8>
 
-- `extension\assets\skins\shenxiu_zhengrong\character\wu_luxun.png`
-- `extension\assets\skins\shenxiu_zhengrong\audio\dcxiongmu1.mp3`
-- `extension\assets\skins\shenxiu_zhengrong\audio\dcxiongmu2.mp3`
-- `extension\assets\skins\shenxiu_zhengrong\audio\dczhangcai1.mp3`
-- `extension\assets\skins\shenxiu_zhengrong\audio\dczhangcai2.mp3`
-- `extension\assets\skins\shenxiu_zhengrong\audio\dcruxian1.mp3`
-- `extension\assets\skins\shenxiu_zhengrong\audio\dcruxian2.mp3`
-- `extension\assets\skins\shenxiu_zhengrong\audio\wu_luxun_die.mp3`
+PC:  <https://github.com/nonameShijian/noname/releases/tag/v1.75>
 
-## 文件边界
+网页端推荐使用 Chrome 系内核浏览器游玩，暂不支持 Firefox 浏览器
 
-- 源码目录：`D:\Git-Program\wuluxun-simulator`
-- 交付目录：`C:\Users\18086\Desktop\wuluxun-simulator`
-- 构建产物：`webroot`
-- 桌面版无名杀安装目录只作为构建来源，不需要作为运行前提
+请尽量保证游玩的 Chrome 系浏览器或手机 Webview 的`内核版本大于等于91`
+
+---
+
+最近有一伙人号称是《无名杀十周年》的开发团队，宣称《无名杀十周年》“全新无名杀，比旧版拥有更多武将，兼容更多扩展”，实际上:
+
+- 《无名杀十周年》（原《无名杀清瑶版》）由无名杀 v1.9.124 修改而来，属于无名杀的一种**Fork**，并非“全新无名杀”；且《无名杀十周年》开发团队**公然违反 GPL-3.0 协议**，详情请看[这里](https://github.com/github/dmca/blob/master/2023/09/2023-09-20-noname.md)、[这里](https://tieba.baidu.com/p/8623890806)以及[这里](https://tieba.baidu.com/p/8624582238)。
+- 《无名杀十周年》至今没有更新神典韦等新机制武将，且删除了部分无名杀的原创武将，导致《无名杀十周年》的武将数量远远不及无名杀前几个版本的武将数量；不仅如此，《无名杀十周年》自分裂后的部分武将源码依然来自无名杀和其他开发者开源的代码。
+- 《无名杀十周年》兼容扩展的方式是不更新本体数据，从而导致《无名杀十周年》仍然在用 1.9.124 版本的代码，无法兼容使用 1.10 以后功能的扩展；而且《无名杀十周年》开发团队在使用**大量**GPL-3.0 开源的代码后对生成产物进行了**混淆加密**，在**违反开源精神**的同时，也导致扩展稳定性极具下降，更容易出问题。
+
+《无名杀十周年》就是彻头彻尾的骗局，《无名杀十周年》的开发团队更是一群拿无名杀吸血的骗子，虽然号称“不忘初心”，却公然对最有资格论述无名杀创作初心的无名杀创始人进行侮辱谩骂，直接违背其制定的规则和开源精神，恶劣程度远超当初在多个无名杀社群“自立”的水叶之流。
+
+先秦介子推曾言：“窃人之财，犹谓之盗，况贪天之功以为己力乎。”无名杀社区发展至今，正是因为有大量的开源代码进行参考，才能不断推陈出新。试想每个扩展开发者在成为一个扩展开发者之前，谁敢说没有大量参考社区内的源码？每个作品凝聚的都是大家的心血，而不是仅仅归属于个别人。我们相信：开放、共享、多元才是无名杀的初心，绝不是封闭、私藏与趋同。
+
+我们在此呼吁无名杀社区正确认识《无名杀十周年》开发团队的一些行为与做法，并希望《无名杀十周年》开发团队能反省迄今以来的所作所为。**自由开源**是无名杀社区的灵魂，希望各方都能够遵循这一精神。
