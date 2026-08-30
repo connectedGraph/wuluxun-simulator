@@ -3,5 +3,8 @@
   "framework": null,
   "installCommand": "",
   "buildCommand": "",
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/node_modules/.pnpm/([^/]+)/node_modules/(.*)", "destination": "/vendor/lib/$1/files/$2" }
+  ]
 }

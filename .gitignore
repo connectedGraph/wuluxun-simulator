@@ -4,5 +4,11 @@ webserver.err.log
 .pw-*
 webroot-verify-*.png
 webroot-verify-*.json
-node_modules/
+# 顶层 node_modules 只装了 Electron 打包依赖,不入库;
+# 运行时浏览器依赖在 node_modules/.pnpm/(vite 产物按 .pnpm 精确路径引用),必须随仓库发布
+node_modules/*
+!node_modules/.pnpm/
 .webserver.py
+
+.vercel
+.env*
