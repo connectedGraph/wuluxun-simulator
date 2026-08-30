@@ -6,5 +6,15 @@
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/node_modules/.pnpm/([^/]+)/node_modules/(.*)", "destination": "/vendor/lib/$1/files/$2" }
+  ],
+  "headers": [
+    {
+      "source": "/(image|audio|font|card|character|layout|theme|music|scene)/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/extension/十周年UI/(assets|audio|image)/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    }
   ]
 }
