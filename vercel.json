@@ -9,7 +9,7 @@
   ],
   "headers": [
     {
-      "source": "/(.*)\\.(png|jpg|jpeg|webp|gif|svg|avif|woff|woff2|ttf|otf|mp3|ogg|wav|m4a|mp4|webm)$",
+      "source": "/:path*.(png|jpg|jpeg|webp|gif|svg|avif|woff|woff2|ttf|otf|mp3|ogg|wav|m4a|mp4|webm)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
     }
   ]
