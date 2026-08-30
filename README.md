@@ -1,5 +1,7 @@
 # 武陆逊模拟器
 
+部署体验网址：[武陆逊模拟器](https://wuluxun-simulator.vercel.app/)
+
 基于开源三国杀游戏[《无名杀》](https://github.com/libnoname/noname)与[《十周年UI》](https://github.com/diandian157/decadeUI)扩展定制的单人单挑模拟器:固定扮演武陆逊,对战兀突骨(原版 AI 托管),开局面板可刷手气卡。
 
 ## 上游与出处
